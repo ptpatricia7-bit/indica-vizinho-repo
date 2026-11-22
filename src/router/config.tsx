@@ -4,6 +4,7 @@ import Home from "../pages/home/page";
 import Produtos from "../pages/produtos/page";
 import CasinhaDetail from "../pages/casinha/page";
 import Admin from "../pages/admin/page";
+import Entrar from "../pages/entrar/page";
 
 const routes: RouteObject[] = [
   {
@@ -17,6 +18,10 @@ const routes: RouteObject[] = [
   {
     path: "/casinha/:id",
     element: <CasinhaDetail />,
+  },
+  {
+    path: "/entrar",
+    element: <Entrar />,
   },
   {
     path: "/admin",
