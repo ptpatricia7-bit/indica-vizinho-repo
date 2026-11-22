@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { supabase } from "@/lib/supabase";
+import { useSession } from "@/lib/useSession";
 
 type NavLink = { label: string; href?: string; to?: string };
 
@@ -14,6 +16,8 @@ const links: NavLink[] = [
 export default function SiteNav() {
   const [solid, setSolid] = useState(false);
   const [open, setOpen] = useState(false);
+  const { session } = useSession();
+  const sair = () => supabase?.auth.signOut();
 
   useEffect(() => {
     const onScroll = () => setSolid(window.scrollY > window.innerHeight * 0.55);
@@ -70,12 +74,22 @@ export default function SiteNav() {
           >
             <i className="ri-shield-user-line"></i> Admin
           </Link>
-          <a
-            href={`${__BASE_PATH__}#cadastro`}
-            className="whitespace-nowrap rounded-full bg-primary-500 text-[#14100a] text-sm font-semibold px-5 py-2.5 hover:bg-primary-400 transition-colors flex items-center gap-2"
-          >
-            Quero entrar <i className="ri-arrow-right-line"></i>
-          </a>
+          {session ? (
+            <button
+              type="button"
+              onClick={sair}
+              className="whitespace-nowrap rounded-full border border-primary-500/60 text-primary-500 text-sm font-semibold px-5 py-2.5 hover:bg-primary-500/10 transition-colors cursor-pointer"
+            >
+              Sair
+            </button>
+          ) : (
+            <Link
+              to="/entrar"
+              className="whitespace-nowrap rounded-full bg-primary-500 text-[#14100a] text-sm font-semibold px-5 py-2.5 hover:bg-primary-400 transition-colors flex items-center gap-2"
+            >
+              Quero entrar <i className="ri-arrow-right-line"></i>
+            </Link>
+          )}
         </div>
 
         <button
@@ -114,13 +128,26 @@ export default function SiteNav() {
           <Link to="/admin" onClick={() => setOpen(false)} className="py-3 text-base text-foreground-700">
             Painel do administrador
           </Link>
-          <a
-            href={`${__BASE_PATH__}#cadastro`}
-            onClick={() => setOpen(false)}
-            className="mt-3 whitespace-nowrap rounded-full bg-primary-500 text-[#14100a] text-sm font-semibold px-5 py-3 text-center"
-          >
-            Quero entrar na vizinhança
-          </a>
+          {session ? (
+            <button
+              type="button"
+              onClick={() => {
+                setOpen(false);
+                sair();
+              }}
+              className="mt-3 whitespace-nowrap rounded-full border border-primary-500/60 text-primary-500 text-sm font-semibold px-5 py-3 text-center cursor-pointer"
+            >
+              Sair
+            </button>
+          ) : (
+            <Link
+              to="/entrar"
+              onClick={() => setOpen(false)}
+              className="mt-3 whitespace-nowrap rounded-full bg-primary-500 text-[#14100a] text-sm font-semibold px-5 py-3 text-center"
+            >
+              Quero entrar na vizinhança
+            </Link>
+          )}
         </div>
       )}
     </header>
