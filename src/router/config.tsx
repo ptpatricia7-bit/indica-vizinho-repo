@@ -5,6 +5,7 @@ import Produtos from "../pages/produtos/page";
 import CasinhaDetail from "../pages/casinha/page";
 import Admin from "../pages/admin/page";
 import Entrar from "../pages/entrar/page";
+import RequireAdmin from "../lib/RequireAdmin";
 
 const routes: RouteObject[] = [
   {
@@ -25,7 +26,11 @@ const routes: RouteObject[] = [
   },
   {
     path: "/admin",
-    element: <Admin />,
+    element: (
+      <RequireAdmin>
+        <Admin />
+      </RequireAdmin>
+    ),
   },
   {
     path: "*",
