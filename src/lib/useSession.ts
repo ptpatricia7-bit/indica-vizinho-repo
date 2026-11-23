@@ -11,12 +11,25 @@ export function useSession() {
       setLoading(false);
       return;
     }
-    supabase.auth.getSession().then(({ data }) => {
-      setSession(data.session);
+    let active = true;
+
+    // Segurança: se o Supabase demorar a responder, não deixa a tela presa em "Carregando".
+    const timer = window.setTimeout(() => {
+      if (active) setLoading(false);
+    }, 4000);
+
+    // O evento INITIAL_SESSION chega logo após assinar e traz a sessão atual (ou null).
+    const { data: sub } = supabase.auth.onAuthStateChange((_event, next) => {
+      if (!active) return;
+      setSession(next);
       setLoading(false);
     });
-    const { data: sub } = supabase.auth.onAuthStateChange((_event, next) => setSession(next));
-    return () => sub.subscription.unsubscribe();
+
+    return () => {
+      active = false;
+      window.clearTimeout(timer);
+      sub.subscription.unsubscribe();
+    };
   }, []);
 
   return { session, loading };
